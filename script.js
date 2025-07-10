@@ -51,7 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
         canFlip = true;
         gameBoard.innerHTML = '';
 
-        const selectedImages = carImages.slice(0, totalPairs);
+        // Shuffle the main image pool to pick a random set
+        const shuffledCarImages = [...carImages];
+        shuffle(shuffledCarImages);
+
+        const selectedImages = shuffledCarImages.slice(0, totalPairs);
         const gameTiles = [...selectedImages, ...selectedImages];
 
         shuffle(gameTiles);
@@ -125,9 +129,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkIfWon() {
         if (matchedPairs === totalPairs) {
             setTimeout(() => {
-                alert('Congratulations! You won!');
-                // Optional: Automatically start a new game or show a reset button
-                // startGame();
+                // Calculate next level's tile count
+                let currentTileCount = parseInt(tileCountInput.value);
+                let nextTileCount = currentTileCount + 2;
+
+                // Check if the next level exceeds the max possible tiles
+                const maxTiles = carImages.length * 2;
+                if (nextTileCount > maxTiles) {
+                    nextTileCount = 4; // Loop back to the beginning
+                }
+                
+                tileCountInput.value = nextTileCount;
+
+                // Automatically start the next level after a short delay
+                setTimeout(startGame, 1500);
+
             }, 500);
         }
     }
